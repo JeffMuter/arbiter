@@ -6,7 +6,8 @@ import (
 	"os"
 	"time"
 
-	"github.com/JeffMuter/arbiter/logging"
+	"arbiter/logging"
+	"arbiter/tests"
 )
 
 func main() {
@@ -31,6 +32,15 @@ func main() {
 }
 
 func runTests(logfile *os.File) error {
+
+	browsers := []string{"chromeium", "firefox", "webkit"}
+	for _, browserName := range browsers {
+		err := tests.TestHomepage(browserName, logfile)
+		if err != nil {
+			logging.LogToFile(logfile, fmt.Sprintf("ERROR: test failed on %s: %v\n", browserName, err))
+			return err
+		}
+	}
 
 	return nil
 }
