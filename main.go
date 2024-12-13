@@ -3,44 +3,18 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
-	"time"
 
-	"arbiter/logging"
-	"arbiter/tests"
+	"github.com/JeffMuter/arbiter/logging"
 )
 
 func main() {
-	// create a file to log in, by date and time in logs package.
-	startTime := time.Now()
-	timestamp := startTime.Format("02-01-15:04:05") // Use Go's reference time format
-	logfile, err := os.Create("logs/test_" + timestamp)
+	// tests are being run, let's create a log file
+	logFile, err := logging.CreateLogFile()
 	if err != nil {
-		log.Fatalf("creating log file err: %w\n", err)
+		fmt.Printf("error in creating log file: %v\n", err)
 	}
-	defer logfile.Close()
+	defer logFile.Close()
 
-	err = runTests(logfile)
-	if err != nil {
-		logging.LogToFile(logfile, fmt.Sprintf("test suite had error while running: %w\n", err))
-	}
+	log.SetOutput(logFile) // sets the output of logging functions to the logfile.
 
-	endTime := time.Now()
-	durationOfTests := endTime.Sub(startTime)
-
-	logging.LogToFile(logfile, fmt.Sprintf("tests finished after %v seconds\n", durationOfTests))
-}
-
-func runTests(logfile *os.File) error {
-
-	browsers := []string{"chromeium", "firefox", "webkit"}
-	for _, browserName := range browsers {
-		err := tests.TestHomepage(browserName, logfile)
-		if err != nil {
-			logging.LogToFile(logfile, fmt.Sprintf("ERROR: test failed on %s: %v\n", browserName, err))
-			return err
-		}
-	}
-
-	return nil
 }

@@ -3,11 +3,13 @@ package tests
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/playwright-community/playwright-go"
 )
 
 func TestHomepage(t *testing.T) {
+	fmt.Println(time.Now())
 	// List of browsers to test
 	browserNames := []string{"chromium", "firefox", "webkit"}
 
@@ -20,6 +22,7 @@ func TestHomepage(t *testing.T) {
 			}
 		})
 	}
+	fmt.Println(time.Now())
 }
 
 func testHomepageForBrowser(browserName string) error {
@@ -60,18 +63,20 @@ func testHomepageForBrowser(browserName string) error {
 	}
 
 	// Navigate to the homepage
-	url := "https://example.com"
+	url := "https://www.wasserstrom.com"
+	fmt.Println("request begin")
+	fmt.Println(time.Now())
 	if _, err := page.Goto(url); err != nil {
 		return fmt.Errorf("could not navigate to %s: %w", url, err)
 	}
+	fmt.Println(time.Now())
 
-	// Validate response (check if page title contains "Example Domain")
 	title, err := page.Title()
 	if err != nil {
 		return fmt.Errorf("could not get page title: %w", err)
 	}
-	if title != "Example Domain" {
-		return fmt.Errorf("unexpected page title: %s", title)
+	if title == "" {
+		return fmt.Errorf("empty title for the page: %s", title)
 	}
 
 	return nil
